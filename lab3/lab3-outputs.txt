@@ -1,0 +1,343 @@
+
+ali@zeidan ~ $ cat /etc/os-release
+# Standard values
+# Specification: https://www.freedesktop.org/software/systemd/man/os-release.html
+NAME="ROSA Fresh Desktop"
+ID=rosa
+PRETTY_NAME="ROSA Fresh Desktop"
+CPE_NAME="cpe:/o:rosalinux:rosa:13"
+META_CLASS=desktop
+VARIANT_ID=fresh-desktop
+ANSI_COLOR="1;43"
+VERSION="13.2"
+VERSION_ID=13
+VERSION_CODENAME=13.2
+HOME_URL="https://www.rosa.ru"
+# TODO: by far not all icons packages provide an icon "rosa"
+LOGO=rosa
+BUG_REPORT_URL="https://bugzilla.rosa.ru"
+# ROSA-specific values
+ROSA_OS_BRANCH=fresh
+ROSA_OS_PLATFORM="rosa13"
+ROSA_OS_PLATFORM_INTEGER=202510
+ROSA_OS_TYPE=desktop
+ROSA_OS_VERSION=13.2
+
+ali@zeidan ~ $ which update-grub grub-mkconfig grub2-mkconfig
+which: no update-grub in (/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/usr/local/games:/usr/games:/home/ali/.local/bin:/home/ali/bin)
+which: no grub-mkconfig in (/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/usr/local/games:/usr/games:/home/ali/.local/bin:/home/ali/bin)
+/usr/sbin/grub2-mkconfig
+
+ali@zeidan ~ $ ls -la /boot/grub/grub.cfg /boot/grub2/grub.cfg 2>/dev/null
+-rw------- 1 root root 7813 Sep 17 11:18 /boot/grub2/grub.cfg
+
+ali@zeidan ~ $ lsblk -f
+NAME        FSTYPE FSVER LABEL UUID                                 FSAVAIL FSUSE% MOUNTPOINTS
+sr0
+nvme0n1
+├─nvme0n1p1 vfat   FAT16       0052-6375                             251.9M     2% /boot/efi
+├─nvme0n1p2 ext4   1.0         a76914b3-5155-49e3-9907-1c48d207fa9b  684.7M    23% /boot
+├─nvme0n1p3 ext4   1.0         f2701dd2-39ea-422e-a01f-bb57c3ab9274   19.5G    29% /
+├─nvme0n1p4 swap   1           332139d5-2b88-4e75-8d2a-ec73987ba970                [SWAP]
+└─nvme0n1p5 ext4   1.0         17ce1ee4-cdec-4b06-a824-7cb2e6796f7e   37.7G     0% /home
+
+ali@zeidan ~ $ cat /proc/cmdline
+BOOT_IMAGE=/vmlinuz-6.12.74-generic-2rosa13-x86_64 root=UUID=f2701dd2-39ea-422e-a01f-bb57c3ab9274 ro rhgb quiet selinux=0 lang=en_US.UTF-8 splash=silent logo.nologo quiet resume=UUID=332139d5-2b88-4e75-8d2a-ec73987ba970
+
+
+---
+
+ali@zeidan ~ $ cat /etc/default/grub
+GRUB_GFXPAYLOAD_LINUX=keep
+GRUB_DISABLE_RECOVERY=true
+GRUB_DISTRIBUTOR="ROSA"
+GRUB_GFXMODE=1024x768,1024x600,800x600,640x480
+GRUB_DEFAULT=saved
+GRUB_SAVEDEFAULT=true
+GRUB_TIMEOUT="4"
+GRUB_CMDLINE_LINUX_DEFAULT='splash=silent logo.nologo quiet'
+GRUB_DISABLE_OS_PROBER=false
+GRUB_THEME=/boot/grub2/themes/rosa/theme.txt
+GRUB_BACKGROUND=/boot/grub2/themes/rosa/terminal_background.png
+GRUB_CMDLINE_LINUX="rhgb quiet selinux=0"
+GRUB_ENABLE_BLSCFG=true
+GRUB_PASSWORD_PROTECT_ONLY_EDITING=true
+
+ali@zeidan ~ $ sudo cat /usr/sbin/grub2-mkconfig | head -50
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+For security reasons, the password you type will not be visible.
+
+[sudo] password for ali:
+#! /bin/sh
+set -e
+
+# Generate grub.cfg by inspecting /boot contents.
+# Copyright (C) 2006,2007,2008,2009,2010 Free Software Foundation, Inc.
+#
+# GRUB is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# GRUB is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
+
+prefix="/usr"
+exec_prefix="/usr"
+datarootdir="/usr/share"
+
+prefix="/usr"
+exec_prefix="/usr"
+sbindir="/usr/sbin"
+bindir="/usr/bin"
+sysconfdir="/etc"
+PACKAGE_NAME=GRUB
+PACKAGE_VERSION=2.12
+host_os=linux-gnu
+datadir="/usr/share"
+if [ "x$pkgdatadir" = x ]; then
+    pkgdatadir="${datadir}/grub"
+fi
+# export it for scripts
+export pkgdatadir
+
+grub_cfg=""
+grub_mkconfig_dir="${sysconfdir}"/grub.d
+
+self=`basename $0`
+
+grub_probe="${sbindir}/grub2-probe"
+grub_file="${bindir}/grub2-file"
+grub_editenv="${bindir}/grub2-editenv"
+grub_script_check="${bindir}/grub2-script-check"
+
+export TEXTDOMAIN=grub
+export TEXTDOMAINDIR="${datarootdir}/locale"
+
+
+ali@zeidan ~ $ cat /proc/cmdline
+BOOT_IMAGE=/vmlinuz-6.12.74-generic-2rosa13-x86_64 root=UUID=f2701dd2-39ea-422e-a01f-bb57c3ab9274 ro rhgb quiet selinux=0 lang=en_US.UTF-8 splash=silent logo.nologo quiet resume=UUID=332139d5-2b88-4e75-8d2a-ec73987ba970
+
+
+ali@zeidan ~ $ sudo ls -la /etc/grub.d/
+total 112
+drwx------   2 root root  4096 Mar 27 10:27 .
+drwxr-xr-x 143 root root 12288 Sep 17 18:34 ..
+-rwxr-xr-x   1 root root  8880 Jan 13  2026 00_header
+-rwxr-xr-x   1 root root    63 Oct 27  2025 01_acpi_hotpatch
+-rwxr-xr-x   1 root root   232 Jan 13  2026 01_users
+-rwxr-xr-x   1 root root 13116 Jan 13  2026 10_linux
+-rwxr-xr-x   1 root root 14445 Jan 13  2026 20_linux_xen
+-rwxr-xr-x   1 root root   730 Nov 26  2025 20_memtest86
+-rwxr-xr-x   1 root root   786 Jan 13  2026 25_bli
+-rwxr-xr-x   1 root root 15719 Jan 13  2026 30_os-prober
+-rwxr-xr-x   1 root root  1194 Jan 13  2026 30_uefi-firmware
+-rwxr-xr-x   1 root root   730 Oct 27  2025 35_fwupd
+-rwxr-xr-x   1 root root   214 Jan 13  2026 40_custom
+-rwxr-xr-x   1 root root   215 Jan 13  2026 41_custom
+-rw-r--r--   1 root root   483 Nov 24  2018 README
+
+ali@zeidan ~ $ sudo cp /etc/default/grub /etc/default/grub.backup
+
+ali@zeidan ~ $ sudo nano /etc/grub.d/40_custom
+
+
+#!/bin/sh
+exec tail -n +3 $0
+# This file provides an easy way to add custom menu entries.  Simply type the
+# menu entries you want to add after this comment.  Be careful not to change
+# the 'exec tail' line above.
+
+
+
+
+
+
+
+#!/bin/sh
+exec tail -n +3 $0
+
+menuentry "Linux (Recovery Mode)" {
+        load_video
+        insmod gzio
+        insmod part_gpt
+        insmod ext2
+        search --no-floppy --fs-uuid --set=root a76914b3-5155-49e3-9907-1c48d207fa9b
+        linux /vmlinux-6.12.74-generic-2rosa13-x86_64 root=UUID=f2701dd2-39ea-422e-a01f-bb57c3ab9274 ro single
+        initrd /initrd-6.12.74-generic-2rosa13-x86_64.img
+}
+
+ali@zeidan ~ $ sudo chmod +x /etc/grub.d/40_custom
+
+ali@zeidan ~ $ sudo grub2-mkconfig -o /tmp/grub/test
+/sbin/grub2-mkconfig: line 271: /tmp/grub/test.new: No such file or directory
+
+
+ali@zeidan ~ $ mkdir -p /tmp/grub
+ali@zeidan ~ $ sudo grub2-mkconfig -o /tmp/grub/test
+[sudo] password for ali:
+Generating grub configuration file ...
+Found theme: /boot/grub2/themes/rosa/theme.txt
+Found background: /boot/grub2/themes/rosa/terminal_background.png
+Found linux image: /boot/vmlinuz-6.12.74-generic-2rosa13-x86_64
+Found initrd image: /boot/initrd-6.12.74-generic-2rosa13-x86_64.img
+Found memtest86+ image: /memtest86.bin
+Warning: os-prober will be executed to detect other bootable partitions.
+Its output will be used to detect bootable binaries on them and create new boot entries.
+Adding boot menu entry for UEFI Firmware Settings ...
+done
+
+ali@zeidan ~ $ sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+[sudo] password for ali:
+Generating grub configuration file ...
+Found theme: /boot/grub2/themes/rosa/theme.txt
+Found background: /boot/grub2/themes/rosa/terminal_background.png
+Found linux image: /boot/vmlinuz-6.12.74-generic-2rosa13-x86_64
+Found initrd image: /boot/initrd-6.12.74-generic-2rosa13-x86_64.img
+Found memtest86+ image: /memtest86.bin
+Warning: os-prober will be executed to detect other bootable partitions.
+Its output will be used to detect bootable binaries on them and create new boot entries.
+Adding boot menu entry for UEFI Firmware Settings ...
+done
+
+
+
+ali@zeidan ~ $ sudo grep -A8 "Recovery Mode" /boot/grub2/grub.cfg
+menuentry "Linux (Recovery Mode)" {
+        load_video
+        insmod gzio
+        insmod part_gpt
+        insmod ext2
+        search --no-floppy --fs-uuid --set=root a76914b3-5155-49e3-9907-1c48d207fa9b
+        linux /vmlinux-6.12.74-generic-2rosa13-x86_64 root=UUID=f2701dd2-39ea-422e-a01f-bb57c3ab9274 ro single
+        initrd /initrd-6.12.74-generic-2rosa13-x86_64.img
+}
+
+
+ali@zeidan ~ $ sudo nano /etc/default/grub
+
+
+
+GNU nano 8.3    /etc/default/grub     Modified
+GRUB_GFXPAYLOAD_LINUX=keep
+GRUB_DISABLE_RECOVERY=true
+GRUB_DISTRIBUTOR="ROSA"
+GRUB_GFXMODE=1024x768,1024x600,800x600,640x480
+GRUB_DEFAULT=saved
+GRUB_SAVEDEFAULT=true
+GRUB_TIMEOUT="4"
+GRUB_CMDLINE_LINUX_DEFAULT='quiet splash net.ifnames=0'
+GRUB_DISABLE_OS_PROBER=false
+GRUB_THEME=/boot/grub2/themes/rosa/theme.txt
+GRUB_BACKGROUND=/boot/grub2/themes/rosa/terminal_background.png
+GRUB_CMDLINE_LINUX="rhgb quiet selinux=0"
+GRUB_ENABLE_BLSCFG=true
+GRUB_PASSWORD_PROTECT_ONLY_EDITING=true
+
+
+ali@zeidan ~ $ sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+Generating grub configuration file ...
+Found theme: /boot/grub2/themes/rosa/theme.txt
+Found background: /boot/grub2/themes/rosa/terminal_background.png
+Found linux image: /boot/vmlinuz-6.12.74-generic-2rosa13-x86_64
+Found initrd image: /boot/initrd-6.12.74-generic-2rosa13-x86_64.img
+Found memtest86+ image: /memtest86.bin
+Warning: os-prober will be executed to detect other bootable partitions.
+Its output will be used to detect bootable binaries on them and create new boot entries.
+Adding boot menu entry for UEFI Firmware Settings ...
+done
+
+
+sudo reboot
+
+
+ali@zeidan ~ $ cat /proc/cmdline
+BOOT_IMAGE=/vmlinuz-6.12.74-generic-2rosa13-x86_64 root=UUID=f2701dd2-39ea-422e-a01f-bb57c3ab9274 ro rhgb quiet selinux=0 lang=en_US.UTF-8 quiet splash net.ifnames=0 resume=UUID=332139d5-2b88-4e75-8d2a-ec73987ba970
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
